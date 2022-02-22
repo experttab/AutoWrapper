@@ -179,7 +179,12 @@ namespace AutoWrapper
                     if (_hasSchemaForMappping && (_propertyMappings.Count == 0 || _propertyMappings == null))
                         throw new ApiException(ResponseMessage.NoMappingFound);
                     else
-                        apiResponse = JsonConvert.DeserializeObject<ApiResponse>(bodyText);
+                        try //add try catch to ignore the non ApiResponse object has same property name but different type. It will cause convert error. For example the object has StatusCode as string.
+                        {
+                            apiResponse = JsonConvert.DeserializeObject<ApiResponse>(bodyText);
+                        }
+                        catch
+                        { }
                 }
 
                 if (apiResponse.StatusCode == 0 && apiResponse.Result == null && apiResponse.ResponseException == null)
